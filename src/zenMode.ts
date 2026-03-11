@@ -70,10 +70,10 @@ export class ZenModeManager {
       rightSidebarCollapsed: app.workspace.rightSplit?.containerEl.classList.contains("is-sidedock-collapsed") ?? true,
     };
 
-    // ライトテーマに変更
-    await app.customCss.setTheme("");
-    vault.setConfig("theme", "moonstone");
-	vault.setConfig("cssTheme", "")
+    // テーマを切り替え
+    await app.customCss.setTheme(settings.cssTheme);
+    vault.setConfig("theme", settings.baseTheme);
+    vault.setConfig("cssTheme", settings.cssTheme);
 
     // Readable line length をオン
     vault.setConfig("readableLineLength", true);
@@ -99,7 +99,7 @@ export class ZenModeManager {
   async restore(savedState: SavedState): Promise<void> {
     const app = this.plugin.app as unknown as ObsidianApp;
     const vault = app.vault;
-    await app.customCss.setTheme(savedState.theme === "obsidian" ? "obsidian" : "");
+    await app.customCss.setTheme(savedState.cssTheme);
     vault.setConfig("theme", savedState.theme);
     vault.setConfig("cssTheme", savedState.cssTheme);
     vault.setConfig("readableLineLength", savedState.readableLineLength);
@@ -120,6 +120,7 @@ export class ZenModeManager {
   private buildStyleText(settings: ZenModeSettings): string {
     const parts: string[] = [
       `.zen-mode-active { --font-text: "${settings.font}"; --file-line-width: ${settings.contentWidth}px; --font-text-size: ${settings.fontSize}px; --line-height-normal: ${settings.lineHeight}; --letter-spacing-normal: ${settings.letterSpacing}em; }`,
+      ...(settings.backgroundColor ? [`.zen-mode-active, .zen-mode-active .workspace-leaf-content, .zen-mode-active .view-content, .zen-mode-active .cm-editor { --background-primary: ${settings.backgroundColor}; --background-primary-alt: ${settings.backgroundColor}; background-color: ${settings.backgroundColor} !important; }`] : []),
       `.zen-mode-active .cm-content, .zen-mode-active .markdown-preview-view { letter-spacing: ${settings.letterSpacing}em; }`,
       `.zen-mode-active .markdown-preview-view p, .zen-mode-active .cm-line { margin-bottom: ${settings.paragraphSpacing}em; }`,
     ];
@@ -161,7 +162,7 @@ export class ZenModeManager {
     const vault = app.vault;
 
     // 元の状態に戻す
-    await app.customCss.setTheme(this.savedState.theme === "obsidian" ? "obsidian" : "");
+    await app.customCss.setTheme(this.savedState.cssTheme);
     vault.setConfig("theme", this.savedState.theme);
 	vault.setConfig("cssTheme", this.savedState.cssTheme)
     vault.setConfig("readableLineLength", this.savedState.readableLineLength);

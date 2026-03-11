@@ -35,6 +35,9 @@ Run it again to exit zen mode and restore all original settings.
 
 | Setting | Default | Description |
 |---|---|---|
+| Base theme | `Light` | Color scheme (Light / Dark) to apply when zen mode activates |
+| Community theme | `` | Name of an installed community theme to apply (blank = default) |
+| Background color | `#faf8ee` | Editor background color |
 | Zen mode font | `Georgia` | Font used while zen mode is active |
 | Content width | `900` | Text column width in pixels |
 | Font size | `18` | Font size in pixels |

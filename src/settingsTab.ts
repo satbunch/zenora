@@ -16,6 +16,46 @@ export class ZenModeSettingTab extends PluginSettingTab {
     containerEl.createEl("h2", { text: "Zenora settings" });
 
     new Setting(containerEl)
+      .setName("Base theme")
+      .setDesc("Color scheme to use while zen mode is active")
+      .addDropdown((drop) =>
+        drop
+          .addOption("moonstone", "Light (Moonstone)")
+          .addOption("obsidian", "Dark (Obsidian)")
+          .setValue(this.plugin.settings.baseTheme)
+          .onChange(async (value: string) => {
+            this.plugin.settings.baseTheme = value as "moonstone" | "obsidian";
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Community theme")
+      .setDesc("Name of the installed community theme to apply (leave blank for default)")
+      .addText((text) =>
+        text
+          .setPlaceholder("e.g. Minimal")
+          .setValue(this.plugin.settings.cssTheme)
+          .onChange(async (value) => {
+            this.plugin.settings.cssTheme = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Background color")
+      .setDesc("Background color while zen mode is active (hex, e.g. #faf8ee)")
+      .addColorPicker((picker) =>
+        picker
+          .setValue(this.plugin.settings.backgroundColor || "#faf8ee")
+          .onChange(async (value) => {
+            this.plugin.settings.backgroundColor = value;
+            await this.plugin.saveSettings();
+            this.plugin.zenMode.applySettings(this.plugin.settings);
+          })
+      );
+
+    new Setting(containerEl)
       .setName("Zen mode font")
       .setDesc("Font to use while zen mode is active")
       .addText((text) =>
