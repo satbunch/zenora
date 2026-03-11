@@ -86,6 +86,19 @@ export class ZenModeSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
+      .setName("Hide backlinks")
+      .setDesc("禅モード中にバックリンクパネルを非表示にする")
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.hideBacklinks)
+          .onChange(async (value) => {
+            this.plugin.settings.hideBacklinks = value;
+            await this.plugin.saveSettings();
+            this.plugin.zenMode.applySettings(this.plugin.settings);
+          })
+      );
+
+    new Setting(containerEl)
       .setName("Top padding")
       .setDesc("禅モード中のコンテンツ上部の余白 (px)")
       .addText((text) =>

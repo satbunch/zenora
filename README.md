@@ -40,6 +40,7 @@ Run it again to exit zen mode and restore all original settings.
 | Hide status bar | `on` | Hides the bottom status bar |
 | Hide inline title | `on` | Hides the inline note title |
 | Hide properties | `on` | Hides frontmatter properties block |
+| Hide backlinks | `on` | Hides the backlinks panel |
 | Top padding | `60` | Top padding of the editor area (px) |
 | Bottom padding | `60` | Bottom padding of the editor area (px) |
 

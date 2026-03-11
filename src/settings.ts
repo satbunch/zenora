@@ -4,6 +4,7 @@ export interface ZenModeSettings {
   hideStatusBar: boolean;
   hideInlineTitle: boolean;
   hideProperties: boolean;
+  hideBacklinks: boolean;
   paddingTop: number;
   paddingBottom: number;
 }
@@ -14,6 +15,7 @@ export const DEFAULT_SETTINGS: ZenModeSettings = {
   hideStatusBar: true,
   hideInlineTitle: true,
   hideProperties: true,
+  hideBacklinks: true,
   paddingTop: 60,
   paddingBottom: 60,
 };
