@@ -6,10 +6,12 @@ import { ZenModeSettingTab } from "./settingsTab";
 export default class ZenModePlugin extends Plugin {
   settings: ZenModeSettings;
   zenMode: ZenModeManager;
+  private ribbonIcon: HTMLElement;
 
   async onload() {
     const data = (await this.loadData()) ?? {};
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
+    // data.settings があれば新形式、なければ旧フラット形式として後方互換で読み込む
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, data.settings ?? data);
 
     this.zenMode = new ZenModeManager(this, (state) => this.persistSavedState(state));
 
@@ -19,13 +21,22 @@ export default class ZenModePlugin extends Plugin {
       this.app.workspace.onLayoutReady(async () => {
         await this.zenMode.restore(savedState);
         await this.persistSavedState(null);
+        this.updateRibbonIcon();
       });
     }
+
+    this.ribbonIcon = this.addRibbonIcon("eye", "Enable Zenora", async () => {
+      await this.zenMode.toggle(this.settings);
+      this.updateRibbonIcon();
+    });
 
     this.addCommand({
       id: "toggle-zen-mode",
       name: "Toggle Zenora",
-      callback: () => this.zenMode.toggle(this.settings),
+      callback: async () => {
+        await this.zenMode.toggle(this.settings);
+        this.updateRibbonIcon();
+      },
     });
 
     this.addSettingTab(new ZenModeSettingTab(this.app, this));
@@ -39,7 +50,11 @@ export default class ZenModePlugin extends Plugin {
 
   async saveSettings() {
     const data = (await this.loadData()) ?? {};
-    await this.saveData({ ...data, ...this.settings });
+    await this.saveData({ ...data, settings: this.settings });
+  }
+
+  private updateRibbonIcon() {
+    this.ribbonIcon.ariaLabel = this.zenMode.active ? "Disable Zenora" : "Enable Zenora";
   }
 
   private async persistSavedState(state: SavedState | null): Promise<void> {

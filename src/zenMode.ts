@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { Notice, Plugin } from "obsidian";
 import { ZenModeSettings } from "./settings";
 
 
@@ -82,7 +82,11 @@ export class ZenModeManager {
     app.workspace.rightSplit?.collapse();
 
     // テーマを切り替え
-    await app.customCss.setTheme(settings.cssTheme);
+    try {
+      await app.customCss.setTheme(settings.cssTheme);
+    } catch {
+      new Notice("Zenora: Community theme not found, using default.");
+    }
     vault.setConfig("theme", settings.baseTheme);
     vault.setConfig("cssTheme", settings.cssTheme);
 
@@ -97,7 +101,11 @@ export class ZenModeManager {
   async restore(savedState: SavedState): Promise<void> {
     const app = this.plugin.app as unknown as ObsidianApp;
     const vault = app.vault;
-    await app.customCss.setTheme(savedState.cssTheme);
+    try {
+      await app.customCss.setTheme(savedState.cssTheme);
+    } catch {
+      new Notice("Zenora: Could not restore community theme.");
+    }
     vault.setConfig("theme", savedState.theme);
     vault.setConfig("cssTheme", savedState.cssTheme);
     vault.setConfig("readableLineLength", savedState.readableLineLength);
@@ -120,7 +128,7 @@ export class ZenModeManager {
       `.zen-mode-active { --font-text: "${settings.font}"; --file-line-width: ${settings.contentWidth}px; --font-text-size: ${settings.fontSize}px; --line-height-normal: ${settings.lineHeight}; --letter-spacing-normal: ${settings.letterSpacing}em; }`,
       ...(settings.backgroundColor ? [`.zen-mode-active, .zen-mode-active .workspace-leaf-content, .zen-mode-active .view-content, .zen-mode-active .cm-editor { --background-primary: ${settings.backgroundColor}; --background-primary-alt: ${settings.backgroundColor}; background-color: ${settings.backgroundColor} !important; }`] : []),
       `.zen-mode-active .cm-content, .zen-mode-active .markdown-preview-view { letter-spacing: ${settings.letterSpacing}em; }`,
-      `.zen-mode-active .markdown-preview-view p, .zen-mode-active .cm-line { margin-bottom: ${settings.paragraphSpacing}em; }`,
+      `.zen-mode-active .markdown-preview-view p { margin-bottom: ${settings.paragraphSpacing}em; }`,
     ];
     if (settings.hideStatusBar) {
       parts.push(`.zen-mode-active .status-bar { display: none !important; }`);
@@ -129,10 +137,10 @@ export class ZenModeManager {
       parts.push(`.zen-mode-active .inline-title { display: none !important; }`);
     }
     if (settings.hideProperties) {
-      parts.push(`.zen-mode-active .metadata-container { display: none !important; }`);
+      parts.push(`.zen-mode-active .metadata-container, .zen-mode-active .metadata-properties { display: none !important; }`);
     }
     if (settings.hideBacklinks) {
-      parts.push(`.zen-mode-active .backlink-pane { display: none !important; }`);
+      parts.push(`.zen-mode-active .backlink-pane, .zen-mode-active .workspace-leaf-content[data-type="backlink"] { display: none !important; }`);
       parts.push(`.zen-mode-active .embedded-backlinks { display: none !important; }`);
     }
     if (settings.hideHeader) {
@@ -167,9 +175,13 @@ export class ZenModeManager {
     const vault = app.vault;
 
     // 元の状態に戻す
-    await app.customCss.setTheme(this.savedState.cssTheme);
+    try {
+      await app.customCss.setTheme(this.savedState.cssTheme);
+    } catch {
+      new Notice("Zenora: Could not restore community theme.");
+    }
     vault.setConfig("theme", this.savedState.theme);
-	vault.setConfig("cssTheme", this.savedState.cssTheme)
+    vault.setConfig("cssTheme", this.savedState.cssTheme);
     vault.setConfig("readableLineLength", this.savedState.readableLineLength);
 
     // サイドバーを元の状態に戻す（setTheme の副作用後に実行）
