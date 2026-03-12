@@ -70,6 +70,17 @@ export class ZenModeManager {
       rightSidebarCollapsed: app.workspace.rightSplit?.containerEl.classList.contains("is-sidedock-collapsed") ?? true,
     };
 
+    // まず非表示にする（テーマ切り替え前にUIを隠す）
+    const style = document.createElement("style");
+    style.id = ZEN_STYLE_ID;
+    style.textContent = this.buildStyleText(settings);
+    document.head.appendChild(style);
+    document.body.classList.add("zen-mode-active");
+
+    // サイドバーを閉じる
+    app.workspace.leftSplit?.collapse();
+    app.workspace.rightSplit?.collapse();
+
     // テーマを切り替え
     await app.customCss.setTheme(settings.cssTheme);
     vault.setConfig("theme", settings.baseTheme);
@@ -77,19 +88,6 @@ export class ZenModeManager {
 
     // Readable line length をオン
     vault.setConfig("readableLineLength", true);
-
-    // サイドバーを閉じる
-    app.workspace.leftSplit?.collapse();
-    app.workspace.rightSplit?.collapse();
-
-    // スタイルを注入
-    const style = document.createElement("style");
-    style.id = ZEN_STYLE_ID;
-    style.textContent = this.buildStyleText(settings);
-    document.head.appendChild(style);
-
-    // body にクラスを付与
-    document.body.classList.add("zen-mode-active");
 
     this.activeSettings = { ...settings };
     this.isZenMode = true;
