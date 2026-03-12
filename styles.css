@@ -6,3 +6,60 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+.zen-mode-active {
+  --font-text: var(--zen-font-text, inherit);
+  --file-line-width: var(--zen-file-line-width, 700px);
+  --font-text-size: var(--zen-font-size, 16px);
+  --line-height-normal: var(--zen-line-height, 1.6);
+  --letter-spacing-normal: var(--zen-letter-spacing, 0em);
+}
+
+.zen-mode-active .cm-content,
+.zen-mode-active .markdown-preview-view {
+  font-size: var(--font-text-size);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.zen-mode-active .markdown-preview-view :where(p, ul, ol, blockquote, pre, table) {
+  margin-bottom: var(--zen-paragraph-spacing, 1em);
+}
+
+.zen-mode-active .view-content {
+  padding-top: var(--zen-padding-top, 0px) !important;
+  padding-bottom: var(--zen-padding-bottom, 0px) !important;
+}
+
+.zen-mode-active.zen-hide-status-bar .status-bar {
+  display: none !important;
+}
+
+.zen-mode-active.zen-hide-inline-title .inline-title {
+  display: none !important;
+}
+
+.zen-mode-active.zen-hide-properties .metadata-container,
+.zen-mode-active.zen-hide-properties .metadata-properties {
+  display: none !important;
+}
+
+.zen-mode-active.zen-hide-backlinks .backlink-pane,
+.zen-mode-active.zen-hide-backlinks .workspace-leaf-content[data-type="backlink"],
+.zen-mode-active.zen-hide-backlinks .embedded-backlinks {
+  display: none !important;
+}
+
+.zen-mode-active.zen-hide-header .view-header {
+  display: none !important;
+}
+
+.zen-mode-active.zen-hide-scrollbar .cm-scroller::-webkit-scrollbar,
+.zen-mode-active.zen-hide-scrollbar .markdown-preview-view::-webkit-scrollbar {
+  display: none !important;
+}
+
+.zen-mode-active.zen-hide-scrollbar .cm-scroller,
+.zen-mode-active.zen-hide-scrollbar .markdown-preview-view {
+  scrollbar-width: none;
+}

@@ -1,6 +1,10 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import ZenModePlugin from "./main";
 
+interface ObsidianAppWithCustomCss {
+  customCss?: { themes?: string[] | Record<string, unknown> };
+}
+
 export class ZenModeSettingTab extends PluginSettingTab {
   plugin: ZenModePlugin;
 
@@ -12,8 +16,6 @@ export class ZenModeSettingTab extends PluginSettingTab {
   display(): void {
     const { containerEl } = this;
     containerEl.empty();
-
-    containerEl.createEl("h2", { text: "Zeno settings" });
 
     new Setting(containerEl)
       .setName("Base theme")
@@ -31,13 +33,13 @@ export class ZenModeSettingTab extends PluginSettingTab {
           })
       );
 
-    const rawThemes = (this.plugin.app as any).customCss?.themes ?? {};
+    const rawThemes = (this.plugin.app as unknown as ObsidianAppWithCustomCss).customCss?.themes ?? {};
     const installedThemes: string[] = Array.isArray(rawThemes)
       ? rawThemes
       : Object.keys(rawThemes);
     new Setting(containerEl)
       .setName("Community theme")
-      .setDesc("Installed community theme to apply (None = use default)")
+      .setDesc("Installed community theme to apply (none = use default)")
       .addDropdown((drop) => {
         drop.addOption("", "None");
         for (const theme of installedThemes) {
@@ -57,7 +59,7 @@ export class ZenModeSettingTab extends PluginSettingTab {
       .setDesc("Font to use while zen mode is active")
       .addText((text) =>
         text
-          .setPlaceholder("e.g. Georgia, Noto Serif JP")
+          .setPlaceholder("Georgia")
           .setValue(this.plugin.settings.font)
           .onChange(async (value) => {
             this.plugin.settings.font = value;

@@ -5,7 +5,8 @@
       "Bash(obsidian read:*)",
       "Bash(obsidian create:*)",
       "WebFetch(domain:github.com)",
-      "Bash(git -C /Users/yoshiosatomi/dev/zeno remote -v 2>/dev/null || echo \"no remote\")"
+      "Bash(git -C /Users/yoshiosatomi/dev/zeno remote -v 2>/dev/null || echo \"no remote\")",
+      "Bash(TZ=Asia/Tokyo date +%Y%m%d && TZ=Asia/Tokyo date +%H:%M)"
     ]
   }
 }
