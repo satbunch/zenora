@@ -20,29 +20,34 @@ export class ZenModeSettingTab extends PluginSettingTab {
       .setDesc("Color scheme to use while zen mode is active")
       .addDropdown((drop) =>
         drop
+          .addOption("system", "System (follow OS setting)")
           .addOption("moonstone", "Light (Moonstone)")
           .addOption("obsidian", "Dark (Obsidian)")
           .setValue(this.plugin.settings.baseTheme)
           .onChange(async (value: string) => {
-            this.plugin.settings.baseTheme = value as "moonstone" | "obsidian";
+            this.plugin.settings.baseTheme = value as "moonstone" | "obsidian" | "system";
             await this.plugin.saveSettings();
             await this.plugin.zenMode.applyTheme(value, this.plugin.settings.cssTheme);
           })
       );
 
+    const installedThemes: string[] = (this.plugin.app as any).customCss?.themes ?? [];
     new Setting(containerEl)
       .setName("Community theme")
-      .setDesc("Name of the installed community theme to apply (leave blank for default)")
-      .addText((text) =>
-        text
-          .setPlaceholder("e.g. Minimal")
+      .setDesc("Installed community theme to apply (None = use default)")
+      .addDropdown((drop) => {
+        drop.addOption("", "None");
+        for (const theme of installedThemes) {
+          drop.addOption(theme, theme);
+        }
+        drop
           .setValue(this.plugin.settings.cssTheme)
           .onChange(async (value) => {
             this.plugin.settings.cssTheme = value;
             await this.plugin.saveSettings();
             await this.plugin.zenMode.applyTheme(this.plugin.settings.baseTheme, value);
-          })
-      );
+          });
+      });
 
     new Setting(containerEl)
       .setName("Zen mode font")

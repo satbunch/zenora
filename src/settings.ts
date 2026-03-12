@@ -1,5 +1,5 @@
 export interface ZenModeSettings {
-  baseTheme: "moonstone" | "obsidian";
+  baseTheme: "moonstone" | "obsidian" | "system";
   cssTheme: string;
   font: string;
   contentWidth: number;

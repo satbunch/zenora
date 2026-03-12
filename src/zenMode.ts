@@ -39,6 +39,8 @@ export class ZenModeManager {
   private plugin: Plugin;
   private activeSettings: ZenModeSettings | null = null;
   private onPersist: (state: SavedState | null) => Promise<void>;
+  private systemThemeMQ: MediaQueryList | null = null;
+  private systemThemeListener: ((e: MediaQueryListEvent) => void) | null = null;
 
   constructor(plugin: Plugin, onPersist: (state: SavedState | null) => Promise<void>) {
     this.plugin = plugin;
@@ -47,6 +49,13 @@ export class ZenModeManager {
 
   get active(): boolean {
     return this.isZenMode;
+  }
+
+  private resolveBaseTheme(baseTheme: string): string {
+    if (baseTheme === "system") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "obsidian" : "moonstone";
+    }
+    return baseTheme;
   }
 
   async toggle(settings: ZenModeSettings): Promise<void> {
@@ -82,13 +91,26 @@ export class ZenModeManager {
     app.workspace.rightSplit?.collapse();
 
     // テーマを切り替え
+    const resolvedTheme = this.resolveBaseTheme(settings.baseTheme);
     try {
       await app.customCss.setTheme(settings.cssTheme);
     } catch {
       new Notice("Zenora: Community theme not found, using default.");
     }
-    vault.setConfig("theme", settings.baseTheme);
+    vault.setConfig("theme", resolvedTheme);
     vault.setConfig("cssTheme", settings.cssTheme);
+
+    // システムテーマ追従リスナーを登録
+    if (settings.baseTheme === "system") {
+      this.systemThemeMQ = window.matchMedia("(prefers-color-scheme: dark)");
+      this.systemThemeListener = (e: MediaQueryListEvent) => {
+        const theme = e.matches ? "obsidian" : "moonstone";
+        vault.setConfig("theme", theme);
+        // customCss.setTheme は非同期だが、OS 変化時は fire-and-forget で十分
+        app.customCss.setTheme(this.activeSettings?.cssTheme ?? "").catch(() => {});
+      };
+      this.systemThemeMQ.addEventListener("change", this.systemThemeListener);
+    }
 
     // Readable line length をオン
     vault.setConfig("readableLineLength", true);
@@ -170,17 +192,41 @@ export class ZenModeManager {
   async applyTheme(baseTheme: string, cssTheme: string): Promise<void> {
     if (!this.isZenMode) return;
     const app = this.plugin.app as unknown as ObsidianApp;
+
+    // システムテーマリスナーを付け替え
+    if (this.systemThemeMQ && this.systemThemeListener) {
+      this.systemThemeMQ.removeEventListener("change", this.systemThemeListener);
+      this.systemThemeMQ = null;
+      this.systemThemeListener = null;
+    }
+    if (baseTheme === "system") {
+      this.systemThemeMQ = window.matchMedia("(prefers-color-scheme: dark)");
+      this.systemThemeListener = (e: MediaQueryListEvent) => {
+        const theme = e.matches ? "obsidian" : "moonstone";
+        app.vault.setConfig("theme", theme);
+        app.customCss.setTheme(this.activeSettings?.cssTheme ?? "").catch(() => {});
+      };
+      this.systemThemeMQ.addEventListener("change", this.systemThemeListener);
+    }
+
     try {
       await app.customCss.setTheme(cssTheme);
     } catch {
       new Notice("Zenora: Community theme not found, using default.");
     }
-    app.vault.setConfig("theme", baseTheme);
+    app.vault.setConfig("theme", this.resolveBaseTheme(baseTheme));
     app.vault.setConfig("cssTheme", cssTheme);
   }
 
   async disable(): Promise<void> {
     if (!this.savedState) return;
+
+    // システムテーマリスナーを解除
+    if (this.systemThemeMQ && this.systemThemeListener) {
+      this.systemThemeMQ.removeEventListener("change", this.systemThemeListener);
+      this.systemThemeMQ = null;
+      this.systemThemeListener = null;
+    }
 
     const app = this.plugin.app as unknown as ObsidianApp;
     const vault = app.vault;
