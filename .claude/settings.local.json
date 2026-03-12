@@ -4,7 +4,8 @@
       "Bash(git add:*)",
       "Bash(obsidian read:*)",
       "Bash(obsidian create:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(git -C /Users/yoshiosatomi/dev/zeno remote -v 2>/dev/null || echo \"no remote\")"
     ]
   }
 }
