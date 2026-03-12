@@ -137,6 +137,17 @@ export class ZenModeManager {
       parts.push(`.zen-mode-active .backlink-pane { display: none !important; }`);
       parts.push(`.zen-mode-active .embedded-backlinks { display: none !important; }`);
     }
+    if (settings.hideHeader) {
+      parts.push(`.zen-mode-active .view-header { display: none !important; }`);
+    }
+    if (settings.hideScrollbar) {
+      parts.push(`.zen-mode-active .cm-scroller::-webkit-scrollbar, .zen-mode-active .markdown-preview-view::-webkit-scrollbar { display: none !important; }`);
+      parts.push(`.zen-mode-active .cm-scroller, .zen-mode-active .markdown-preview-view { scrollbar-width: none; }`);
+    }
+    if (settings.fadeInDuration > 0) {
+      parts.push(`.zen-mode-active .workspace-leaf-content { animation: zenFadeIn ${settings.fadeInDuration}ms ease-in-out; }`);
+      parts.push(`@keyframes zenFadeIn { from { opacity: 0; } to { opacity: 1; } }`);
+    }
     if (settings.paddingTop > 0 || settings.paddingBottom > 0) {
       parts.push(`.zen-mode-active .view-content { padding-top: ${settings.paddingTop}px !important; padding-bottom: ${settings.paddingBottom}px !important; }`);
     }

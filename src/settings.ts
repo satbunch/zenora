@@ -8,6 +8,9 @@ export interface ZenModeSettings {
   hideInlineTitle: boolean;
   hideProperties: boolean;
   hideBacklinks: boolean;
+  hideHeader: boolean;
+  hideScrollbar: boolean;
+  fadeInDuration: number;
   fontSize: number;
   lineHeight: number;
   paragraphSpacing: number;
@@ -26,6 +29,9 @@ export const DEFAULT_SETTINGS: ZenModeSettings = {
   hideInlineTitle: true,
   hideProperties: true,
   hideBacklinks: true,
+  hideHeader: true,
+  hideScrollbar: true,
+  fadeInDuration: 300,
   fontSize: 18,
   lineHeight: 1.8,
   paragraphSpacing: 1.2,
