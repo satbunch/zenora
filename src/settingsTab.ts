@@ -31,7 +31,10 @@ export class ZenModeSettingTab extends PluginSettingTab {
           })
       );
 
-    const installedThemes: string[] = (this.plugin.app as any).customCss?.themes ?? [];
+    const rawThemes = (this.plugin.app as any).customCss?.themes ?? {};
+    const installedThemes: string[] = Array.isArray(rawThemes)
+      ? rawThemes
+      : Object.keys(rawThemes);
     new Setting(containerEl)
       .setName("Community theme")
       .setDesc("Installed community theme to apply (None = use default)")
