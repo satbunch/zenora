@@ -1,6 +1,6 @@
 {
 	"name": "zeno",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"description": "Flexible, customizable zen mode for focused writing.",
 	"main": "main.js",
 	"type": "module",

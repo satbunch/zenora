@@ -1,7 +1,7 @@
 {
 	"id": "zeno",
 	"name": "Zeno",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"minAppVersion": "0.15.0",
 	"description": "Flexible, customizable zen mode for focused writing.",
 	"author": "satbunch",
