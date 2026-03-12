@@ -168,6 +168,18 @@ export class ZenModeManager {
     this.applySettings({ ...this.activeSettings, font });
   }
 
+  async applyTheme(baseTheme: string, cssTheme: string): Promise<void> {
+    if (!this.isZenMode) return;
+    const app = this.plugin.app as unknown as ObsidianApp;
+    try {
+      await app.customCss.setTheme(cssTheme);
+    } catch {
+      new Notice("Zenora: Community theme not found, using default.");
+    }
+    app.vault.setConfig("theme", baseTheme);
+    app.vault.setConfig("cssTheme", cssTheme);
+  }
+
   async disable(): Promise<void> {
     if (!this.savedState) return;
 

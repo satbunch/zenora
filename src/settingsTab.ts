@@ -26,6 +26,7 @@ export class ZenModeSettingTab extends PluginSettingTab {
           .onChange(async (value: string) => {
             this.plugin.settings.baseTheme = value as "moonstone" | "obsidian";
             await this.plugin.saveSettings();
+            await this.plugin.zenMode.applyTheme(value, this.plugin.settings.cssTheme);
           })
       );
 
@@ -39,6 +40,7 @@ export class ZenModeSettingTab extends PluginSettingTab {
           .onChange(async (value) => {
             this.plugin.settings.cssTheme = value;
             await this.plugin.saveSettings();
+            await this.plugin.zenMode.applyTheme(this.plugin.settings.baseTheme, value);
           })
       );
 
