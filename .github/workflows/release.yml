@@ -17,13 +17,19 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-versions: "20"
+          node-version: "20"
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build
         run: npm run build
+
+      - name: Create zip
+        run: |
+          mkdir zeno
+          cp main.js manifest.json styles.css zeno/
+          zip -r zeno.zip zeno/
 
       - name: Create release
         env:
@@ -33,4 +39,4 @@ jobs:
           gh release create "$tag" \
             --title "$tag" \
             --notes "" \
-            main.js manifest.json styles.css
+            main.js manifest.json styles.css zeno.zip

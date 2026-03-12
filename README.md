@@ -13,17 +13,26 @@ A flexible, customizable zen mode plugin for Obsidian. Tailor your distraction-f
 
 ## Installation
 
+### Via BRAT (recommended)
+
+[BRAT](https://github.com/TfTHacker/obsidian42-brat) lets you install plugins directly from GitHub.
+
+1. Install **BRAT** from the Obsidian Community plugins
+2. Open BRAT settings and click **Add Beta plugin**
+3. Enter `satbunch/zeno` and click **Add plugin**
+4. Enable Zeno in **Settings → Community plugins**
+
+### Manual (ZIP)
+
+1. Download `zeno.zip` from the [latest release](../../releases/latest)
+2. Extract and copy the `zeno` folder to `<your-vault>/.obsidian/plugins/`
+3. Enable the plugin in **Settings → Community plugins**
+
 ### From Obsidian Community Plugins (coming soon)
 
 1. Open **Settings → Community plugins**
 2. Search for **Zeno**
 3. Install and enable
-
-### Manual
-
-1. Download `main.js`, `styles.css`, and `manifest.json` from the [latest release](../../releases/latest)
-2. Copy them to `<your-vault>/.obsidian/plugins/zeno/`
-3. Enable the plugin in **Settings → Community plugins**
 
 ## Usage
 
